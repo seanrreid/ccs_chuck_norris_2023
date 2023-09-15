@@ -4,19 +4,30 @@ const categoryListFormEl = document.querySelector('#categoryListForm');
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM IS READY');
 
-    const chuckQuote = document.querySelector('#chuckQuote');
-
     const apiUrl = 'https://api.chucknorris.io/jokes/random?category=dev';
-    get(apiUrl).then(function (response) {
-        console.log('RESPONSE:', response);
-        showQuote(response.value, chuckQuote);
-    });
+    generateQuote(apiUrl);
 
     const categoriesUrl = 'https://api.chucknorris.io/jokes/categories';
     get(categoriesUrl).then(function (response) {
+        console.log("CATEGORY RESPONSE:", response);
         generateCategoryList(response);
     });
+
+    categoryListFormEl.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const newCategory = this.querySelector('select').value;
+        const apiUrl = `https://api.chucknorris.io/jokes/random?category=${newCategory}`;
+        generateQuote(apiUrl);
+    })
 });
+
+function generateQuote(apiUrl) {
+    const chuckQuote = document.querySelector('#chuckQuote');
+
+    get(apiUrl).then(function (response) {
+        showQuote(response.value, chuckQuote);
+    });
+}
 
 function showQuote(quote, element) {
     element.innerText = quote;
@@ -36,9 +47,3 @@ function generateCategoryList(categoryArray) {
     // append the <select> to the <form>
     categoryListFormEl.append(selectEl);
 }
-
-// a function called "showQuote" that creates a variable named "quote" and a variable named "element". "quote" will store a String, and element will store an Object, and these will be available to the entire function
-
-categoryListFormEl.addEventListener('submit', {
-
-})
